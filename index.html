@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Business To-Do List</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Enhanced Business To-Do List</h1>
+        </header>
+
+        <main>
+            <!-- Task Management Section -->
+             
+            <section class="task-management">
+                <div class="task-controls">
+                    <button id="addTaskBtn" class="btn-primary">Add Task</button>
+                    <button id="addCategoryBtn" class="btn-secondary">Add Category</button>
+                </div>
+
+                <!-- Task Form -->
+                <div id="taskFormModal" class="modal-overlay hidden">
+                    <div class="modal-content glass-effect">
+                        <button type="button" class="modal-close" aria-label="Close">×</button>
+                        <form id="taskForm">
+                            <h2><i class="fas fa-tasks"></i> Add New Task</h2>
+                            <div class="form-group">
+                                <label for="taskTitle">Title:</label>
+                                <input type="text" id="taskTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="taskDescription">Description (Optional):</label>
+                                <textarea id="taskDescription" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="taskDueDate">Due Date and Time:</label>
+                                <input type="datetime-local" id="taskDueDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="taskPriority">Priority:</label>
+                                <select id="taskPriority">
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="taskCategory">Category:</label>
+                                <select id="taskCategory"></select>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" id="saveTaskBtn" class="btn-primary">
+                                    <i class="fas fa-save"></i> Save Task
+                                </button>
+                                <button type="button" id="cancelTaskBtn" class="btn-secondary">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Category Form -->
+                <div id="categoryFormModal" class="modal-overlay hidden">
+                    <div class="modal-content glass-effect">
+                        <button type="button" class="modal-close" aria-label="Close">×</button>
+                        <form id="categoryForm">
+                            <h2><i class="fas fa-folder-plus"></i> Add New Category</h2>
+                            <div class="form-group">
+                                <label for="categoryName">Category Name:</label>
+                                <input type="text" id="categoryName" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" id="saveCategoryBtn" class="btn-primary">
+                                    <i class="fas fa-save"></i> Save Category
+                                </button>
+                                <button type="button" id="cancelCategoryBtn" class="btn-secondary">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Filters Section -->
+                <div class="filters-container">
+                    <div class="filters-header">
+                        <h3><i class="fas fa-filter"></i> Filter Tasks</h3>
+                    </div>
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label for="priorityFilter">
+                                <i class="fas fa-flag"></i> Priority
+                            </label>
+                            <div class="select-wrapper">
+                                <select id="priorityFilter">
+                                    <option value="all">All Priorities</option>
+                                    <option value="high">High</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="low">Low</option>
+                                </select>
+                                <span class="select-icon"></span>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="statusFilter">
+                                <i class="fas fa-tasks"></i> Status
+                            </label>
+                            <div class="select-wrapper">
+                                <select id="statusFilter">
+                                    <option value="all">All Status</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                                <span class="select-icon"></span>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="categoryFilter">
+                                <i class="fas fa-folder"></i> Category
+                            </label>
+                            <div class="select-wrapper">
+                                <select id="categoryFilter">
+                                    <option value="all">All Categories</option>
+                                </select>
+                                <span class="select-icon"></span>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="searchInput">
+                                <i class="fas fa-search"></i> Search
+                            </label>
+                            <div class="search-wrapper">
+                                <input type="text" id="searchInput" placeholder="Search tasks...">
+                                <span class="search-icon"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Task Display Section -->
+            <section class="task-display">
+                <div class="categories-panel">
+                    <h2>Categories</h2>
+                    <div id="categoryList" class="category-list"></div>
+                </div>
+                <div class="tasks-panel">
+                    <h2>Tasks</h2>
+                    <div id="taskList" class="task-list"></div>
+                </div>
+            </section>
+
+            <!-- Statistics Dashboard will be inserted here by JavaScript -->
+            <div id="statisticsDashboard"></div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+   <!-- Core functionality first -->
+<script src="js/storage.js"></script>
+
+<!-- Feature modules -->
+<script src="js/reminderSystem.js"></script>
+<script src="js/statisticsHandler.js"></script>
+
+<!-- Main application last -->
+<script src="js/app.js"></script>
+</body>
+</html>

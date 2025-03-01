@@ -1,0 +1,36 @@
+{
+  "name": "enhance-todo-app1",
+  "version": "1.0.0",
+  "description": "Enhanced Business To-Do List Application",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "keywords": ["todo", "business", "task management"],
+  "author": "Samuel Maitland",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.x.x",
+    "@babel/preset-env": "^7.x.x",
+    "babel-jest": "^29.x.x",
+    "jest": "^29.x.x",
+    "lodash": "^4.17.21"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "moduleDirectories": ["node_modules", "src"],
+    "rootDir": ".",
+    "modulePaths": ["<rootDir>/src"],
+    "moduleFileExtensions": ["js", "jsx", "json"],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(lodash-es)/)"
+    ],
+    "moduleNameMapper": {
+      "^@/components/(.*)$": "<rootDir>/src/components/$1"
+    }
+  }
+}
