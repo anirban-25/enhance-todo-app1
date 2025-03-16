@@ -27,6 +27,39 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Add these new CSS variables for light mode */
+[data-theme="light"] {
+    /* Main colors - standard business palette */
+    --primary-color: #2c3e50;      /* Dark blue-gray */
+    --primary-dark: #1a2530;       /* Darker blue-gray */
+    --primary-glow: rgba(44, 62, 80, 0.15);
+    --secondary-color: #3498db;    /* Blue */
+    --accent-color: #2980b9;       /* Darker blue */
+    --success-color: #27ae60;      /* Green */
+    --danger-color: #e74c3c;       /* Red */
+    --warning-color: #f39c12;      /* Orange */
+    
+    /* Background colors */
+    --background-color: #f5f5f5;   /* Light gray */
+    --surface-color: #ffffff;      /* White */
+    --surface-color-hover: #f0f0f0;/* Light gray */
+    --card-background: #ffffff;    /* White */
+    
+    /* Text colors */
+    --text-primary: #333333;       /* Dark gray */
+    --text-secondary: #666666;     /* Medium gray */
+    --text-muted: #999999;         /* Light gray */
+    
+    /* Border and shadow */
+    --border-color: #e0e0e0;       /* Light gray */
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --shadow-glow: none;
+}
+
+
 /* Filter styles - Specifically for the elements in your image */
 .filters-container {
     background: var(--surface-color);
@@ -387,7 +420,16 @@ body {
     height: 200px;
     gap: 16px;
 }
-
+.chart-tooltip {
+    background-color: var(--surface-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+    box-shadow: var(--shadow-md) !important;
+    color: var(--text-primary) !important;
+    font-family: inherit !important;
+    font-size: 0.85rem !important;
+}
 .chart-bar {
     flex: 1;
     display: flex;
@@ -532,7 +574,155 @@ body {
     gap: 8px;
     text-transform: uppercase;
 }
+.graph-container {
+    background: var(--surface-color);
+    border-radius: 16px;
+    padding: 24px;
+    margin: 20px 0;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
 
+.graph-container h2 {
+    color: var(--primary-color);
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Canvas container with fixed height */
+.canvas-container {
+    width: 100%;
+    height: 400px;
+    position: relative;
+}
+
+#taskTimelineChart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Graph Controls */
+.graph-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 20px 0 10px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.graph-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.toggle-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.toggle-indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid;
+    position: relative;
+    transition: var(--transition);
+}
+
+.toggle-indicator::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+/* Pending Tasks Toggle */
+.toggle-pending .toggle-indicator {
+    border-color: #ff6b6b;
+}
+
+.toggle-pending .toggle-indicator::after {
+    background-color: #ff6b6b;
+}
+
+.toggle-pending.active .toggle-indicator::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.toggle-pending.active .toggle-label {
+    color: #ff6b6b;
+}
+
+/* Completed Tasks Toggle */
+.toggle-completed .toggle-indicator {
+    border-color: #51cf66;
+}
+
+.toggle-completed .toggle-indicator::after {
+    background-color: #51cf66;
+}
+
+.toggle-completed.active .toggle-indicator::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.toggle-completed.active .toggle-label {
+    color: #51cf66;
+}
+
+/* Light theme adjustments */
+[data-theme="light"] .graph-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="light"] .graph-container h2 {
+    color: var(--primary-color);
+}
+
+[data-theme="light"] .graph-controls {
+    border-top: 1px solid var(--border-color);
+}
+
+/* Animation for graph appearance */
+.graph-appear {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .graph-controls {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
 /* Primary Button */
 .btn-primary {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
@@ -924,6 +1114,8 @@ body {
 .search-wrapper input {
     width: 100%;
     padding: 12px 16px;
+    
+    box-sizing: border-box;
     padding-left: 40px;
     background: rgba(10, 10, 15, 0.6);
     border: 1px solid var(--border-color);
@@ -1292,4 +1484,289 @@ body {
         flex-wrap: wrap;
         justify-content: center;
     }
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+    transition: var(--transition);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+.theme-toggle i {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+/* Base background adjustments - keep the grid pattern but make it subtle */
+[data-theme="light"] body {
+    background-color: var(--background-color);
+    background-image: 
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.02) 0%, transparent 50%),
+        linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    background-size: 100% 100%, 30px 30px, 30px 30px;
+    background-position: 0 0, 0 0, 0 0;
+}
+
+/* Button styles in light mode */
+[data-theme="light"] .btn-primary {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+[data-theme="light"] .btn-primary:hover {
+    background: var(--primary-dark);
+    box-shadow: var(--shadow-md);
+}
+
+[data-theme="light"] .btn-primary::before {
+    display: none;
+}
+
+[data-theme="light"] .btn-secondary {
+    background: white;
+    color: var(--primary-color);
+    border: 1px solid var(--border-color);
+    box-shadow: none;
+}
+
+[data-theme="light"] .btn-secondary:hover {
+    background: var(--surface-color-hover);
+    color: var(--primary-color);
+}
+
+[data-theme="light"] .btn-secondary::before {
+    display: none;
+}
+
+/* Filters section in light mode */
+[data-theme="light"] .filters-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+[data-theme="light"] .filters-header h3 {
+    color: var(--primary-color);
+}
+
+[data-theme="light"] .filters-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme="light"] .filter-group label {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .filter-group label i {
+    color: var(--primary-color);
+}
+
+[data-theme="light"] .select-wrapper select,
+[data-theme="light"] .search-wrapper input {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .select-icon {
+    border-right: 2px solid var(--text-secondary);
+    border-bottom: 2px solid var(--text-secondary);
+}
+
+[data-theme="light"] .select-wrapper:hover select,
+[data-theme="light"] .search-wrapper input:hover {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.2);
+}
+
+/* Task display section in light mode */
+[data-theme="light"] .task-display {
+    gap: 20px;
+}
+
+[data-theme="light"] .categories-panel,
+[data-theme="light"] .tasks-panel {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+[data-theme="light"] .categories-panel h2,
+[data-theme="light"] .tasks-panel h2 {
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme="light"] .category-item {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="light"] .category-item:hover {
+    background: var(--surface-color-hover);
+    border-color: var(--secondary-color);
+    box-shadow: var(--shadow-sm);
+    transform: translateX(3px);
+}
+
+[data-theme="light"] .task-item {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="light"] .task-item:hover {
+    background: var(--surface-color-hover);
+    border-color: var(--secondary-color);
+    box-shadow: var(--shadow-sm);
+}
+
+[data-theme="light"] .task-title {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .task-description {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .task-category {
+    background: rgba(52, 152, 219, 0.1);
+    color: var(--secondary-color);
+    border: 1px solid var(--secondary-color);
+}
+
+[data-theme="light"] .task-due-date {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .task-checkbox {
+    border: 2px solid var(--border-color);
+}
+
+[data-theme="light"] .task-checkbox:checked {
+    background: var(--success-color);
+    border-color: var(--success-color);
+}
+
+/* Priority indicators in light mode */
+[data-theme="light"] .task-item.priority-high {
+    border-left: 4px solid var(--danger-color);
+}
+
+[data-theme="light"] .task-item.priority-medium {
+    border-left: 4px solid var(--warning-color);
+}
+
+[data-theme="light"] .task-item.priority-low {
+    border-left: 4px solid var(--success-color);
+}
+
+/* Statistics Dashboard in light mode */
+[data-theme="light"] #statisticsDashboard,
+[data-theme="light"] .statistics-dashboard {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+}
+
+[data-theme="light"] .statistics-dashboard .stats-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+[data-theme="light"] .statistics-dashboard .stats-header h2 {
+    color: var(--primary-color);
+}
+
+[data-theme="light"] .stat-value {
+    color: var(--primary-color);
+}
+
+[data-theme="light"] .stat-label {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .chart-container,
+[data-theme="light"] .priority-chart,
+[data-theme="light"] .category-chart {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+}
+
+/* Search icon in light mode */
+[data-theme="light"] .search-wrapper::before {
+    color: var(--text-secondary);
+}
+
+/* Modal styles in light mode */
+[data-theme="light"] .modal-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+[data-theme="light"] .modal-content {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+}
+
+[data-theme="light"] .glass-effect {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--surface-color);
+}
+
+[data-theme="light"] .modal-content h2 {
+    color: var(--primary-color);
+}
+
+[data-theme="light"] .form-group label {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group textarea,
+[data-theme="light"] .form-group select {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Theme toggle button in light mode */
+[data-theme="light"] .theme-toggle {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+}
+
+[data-theme="light"] .theme-toggle i {
+    color: var(--primary-color);
+}
+
+[data-theme="light"] .theme-toggle:hover {
+    background: var(--surface-color-hover);
 }

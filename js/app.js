@@ -154,6 +154,7 @@ if (typeof window.TodoApp === 'undefined') {
                 if (this.taskForm) this.taskForm.classList.add('hidden');
                 this.showSuccess('Task saved successfully');
                 if (this.reminderSystem) this.reminderSystem.checkDueDates();
+                taskGraphHandler.updateGraph();
             }
         }
 
@@ -179,6 +180,7 @@ if (typeof window.TodoApp === 'undefined') {
                 if (storageHandler.deleteTask(taskId)) {
                     this.refreshTaskList();
                     this.showSuccess('Task deleted successfully');
+                    taskGraphHandler.updateGraph();
                 }
             }
         }
@@ -194,7 +196,19 @@ if (typeof window.TodoApp === 'undefined') {
         }
 
         toggleTaskCompletion(taskId, completed) {
-            if (storageHandler.updateTask(taskId, { completed })) this.refreshTaskList();
+            try {
+                // Update the task status and add completion timestamp
+                const status = completed ? 'completed' : 'pending';
+                if (storageHandler.updateTask(taskId, { status, completed })) {
+                    this.refreshTaskList();
+                    // Update the graph after task completion
+                    if (taskGraphHandler && typeof taskGraphHandler.updateGraph === 'function') {
+                        taskGraphHandler.updateGraph();
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling task completion:', error);
+            }
         }
 
         loadCategories() {
@@ -240,14 +254,36 @@ if (typeof window.TodoApp === 'undefined') {
         }
 
         refreshTaskList() {
-            if (!this.taskList) return;
-            this.taskList.innerHTML = '';
-            const tasks = storageHandler.getAllTasks();
-            const filteredTasks = this.filterTasks(tasks);
-            filteredTasks.forEach(task => this.addTaskToList(task));
-            if (this.statisticsHandler) this.statisticsHandler.updateStatistics();
+            try {
+                if (!this.taskList) return;
+                
+                // Store the statistics dashboard element
+                const statisticsDashboard = document.getElementById('statisticsDashboard');
+                
+                // Only clear task list items, not the entire HTML
+                const taskItems = this.taskList.querySelectorAll('.task-item');
+                taskItems.forEach(item => item.remove());
+                
+                // Update task list
+                const tasks = storageHandler.getAllTasks();
+                const filteredTasks = this.filterTasks(tasks);
+                filteredTasks.forEach(task => this.addTaskToList(task));
+                
+                // Update statistics if available
+                if (this.statisticsHandler) {
+                    this.statisticsHandler.updateStatistics();
+                }
+                
+                // Update graph if available - using a small timeout to ensure DOM is settled
+                if (typeof taskGraphHandler !== 'undefined' && typeof taskGraphHandler.updateGraph === 'function') {
+                    setTimeout(() => {
+                        taskGraphHandler.updateGraph();
+                    }, 100);
+                }
+            } catch (error) {
+                console.error('Error refreshing task list:', error);
+            }
         }
-
         addTaskToList(task) {
             const taskElement = document.createElement('div');
             taskElement.className = `task-item priority-${task.priority}`;
@@ -329,3 +365,40 @@ if (!window.todoApp) {
         window.todoApp = new TodoApp();
     });
 }
+
+// Theme toggle functionality
+function initializeTheme() {
+    const themeToggle = document.getElementById('themeToggle');
+    
+    // Set initial theme to light by default, unless user has a saved preference
+    const savedTheme = localStorage.getItem('theme');
+    const initialTheme = savedTheme || 'light';
+    document.documentElement.setAttribute('data-theme', initialTheme);
+    updateThemeIcon(initialTheme);
+    
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+    });
+}
+
+function updateThemeIcon(theme) {
+    const icon = document.querySelector('.theme-toggle i');
+    if (theme === 'dark') {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+    } else {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+    }
+}
+
+// Call this function when the app initializes
+document.addEventListener('DOMContentLoaded', () => {
+    initializeTheme();
+    // ... other initialization code ...
+});

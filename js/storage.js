@@ -18,7 +18,14 @@ class StorageHandler {
         }
         console.log('StorageHandler initialized successfully');
     }
-
+    getallTasksforMe(){
+        try{
+            return JSON.parse(localStorage.getItem(this.TASKS_KEY)) || [];
+        }catch(error){
+            console.error('Error getting tasks:', error);
+            return [];
+        }
+    }
     // Task Operations
     getAllTasks() {
         try {
@@ -33,6 +40,9 @@ class StorageHandler {
         try {
             const tasks = this.getAllTasks();
             task.id = this.generateId();
+            task.createdAt = new Date().toISOString();
+            task.completedAt = null;
+            task.status = 'pending';
             tasks.push(task);
             localStorage.setItem(this.TASKS_KEY, JSON.stringify(tasks));
             return task;
@@ -47,6 +57,11 @@ class StorageHandler {
             const tasks = this.getAllTasks();
             const index = tasks.findIndex(task => task.id === taskId);
             if (index !== -1) {
+                if (updates.status === 'completed' && tasks[index].status !== 'completed') {
+                    updates.completedAt = new Date().toISOString();
+                } else if (updates.status === 'pending') {
+                    updates.completedAt = null;
+                }
                 tasks[index] = { ...tasks[index], ...updates };
                 localStorage.setItem(this.TASKS_KEY, JSON.stringify(tasks));
                 return true;
@@ -135,6 +150,42 @@ class StorageHandler {
         } catch (error) {
             console.error('Error clearing data:', error);
             return false;
+        }
+    }
+
+    // Add new method to get task statistics over time
+    getTaskStatistics(startDate, endDate) {
+        try {
+            const tasks = this.getAllTasks();
+            const timelineData = [];
+            
+            let currentDate = new Date(startDate);
+            const end = new Date(endDate);
+            
+            while (currentDate <= end) {
+                const dateStr = currentDate.toISOString().split('T')[0];
+                
+                const stats = {
+                    date: dateStr,
+                    pending: tasks.filter(task => {
+                        const taskCreated = new Date(task.createdAt).toISOString().split('T')[0];
+                        const taskCompleted = task.completedAt ? new Date(task.completedAt).toISOString().split('T')[0] : null;
+                        return taskCreated <= dateStr && (!taskCompleted || taskCompleted > dateStr);
+                    }).length,
+                    completed: tasks.filter(task => {
+                        const taskCompleted = task.completedAt ? new Date(task.completedAt).toISOString().split('T')[0] : null;
+                        return taskCompleted === dateStr;
+                    }).length
+                };
+                
+                timelineData.push(stats);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            return timelineData;
+        } catch (error) {
+            console.error('Error getting task statistics:', error);
+            return [];
         }
     }
 }
