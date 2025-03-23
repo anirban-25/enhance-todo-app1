@@ -8,10 +8,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-    <!-- Add this button -->
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-        <i class="fas fa-moon"></i>
-    </button>
+    <!-- User Profile Button (replaces the theme toggle) -->
+    <div class="profile-wrapper">
+        <button class="profile-btn" id="profileBtn" aria-label="User profile">
+            <i class="fas fa-user-circle"></i>
+        </button>
+        <div id="profileDropdown" class="profile-dropdown hidden">
+            <div class="profile-header">
+                <i class="fas fa-user-circle profile-avatar"></i>
+                <div class="profile-info">
+                    <span id="profileUserName">User Name</span>
+                    <span id="profileUserEmail" class="profile-email">user@example.com</span>
+                </div>
+            </div>
+            <div class="profile-menu">
+                <button id="themeToggleProfile" class="profile-menu-item">
+                    <i class="fas fa-moon"></i>
+                    <span>Toggle Theme</span>
+                </button>
+                <button id="logoutBtn" class="profile-menu-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
     
     <div class="container">
         <header>
@@ -91,6 +112,60 @@
                     </div>
                 </div>
 
+                <!-- Authentication Modal -->
+                <div id="authModal" class="modal-overlay hidden">
+                    <div class="modal-content glass-effect">
+                        <button type="button" class="modal-close" aria-label="Close">×</button>
+                        <div id="loginForm">
+                            <h2><i class="fas fa-user-lock"></i> Login</h2>
+                            <div class="form-group">
+                                <label for="loginEmail">Email:</label>
+                                <input type="email" id="loginEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPassword">Password:</label>
+                                <input type="password" id="loginPassword" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="loginBtn" class="btn-primary">
+                                    <i class="fas fa-sign-in-alt"></i> Login
+                                </button>
+                                <button type="button" id="showRegisterBtn" class="btn-secondary">
+                                    <i class="fas fa-user-plus"></i> Register
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="registerForm" class="hidden">
+                            <h2><i class="fas fa-user-plus"></i> Register</h2>
+                            <div class="form-group">
+                                <label for="registerName">Name (Optional):</label>
+                                <input type="text" id="registerName">
+                            </div>
+                            <div class="form-group">
+                                <label for="registerEmail">Email:</label>
+                                <input type="email" id="registerEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="registerPassword">Password:</label>
+                                <input type="password" id="registerPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="registerPasswordConfirm">Confirm Password:</label>
+                                <input type="password" id="registerPasswordConfirm" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" id="registerBtn" class="btn-primary">
+                                    <i class="fas fa-user-plus"></i> Register
+                                </button>
+                                <button type="button" id="showLoginBtn" class="btn-secondary">
+                                    <i class="fas fa-sign-in-alt"></i> Back to Login
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Filters Section -->
                 <div class="filters-container">
                     <div class="filters-header">
@@ -165,7 +240,11 @@
         </main>
     </div>
     <!-- Scripts -->
-    <!-- Core functionality first -->
+    <!-- Authentication scripts first -->
+    <script src="js/auth.js"></script>
+    <script src="js/authUI.js"></script>
+    
+    <!-- Core functionality -->
     <script src="js/storage.js"></script>
 
     <!-- Feature modules -->
@@ -179,7 +258,11 @@
     <script src="js/taskGraph.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            taskGraphHandler.initializeGraph();
+            // Initialize task graph when DOM is loaded
+            if (typeof taskGraphHandler !== 'undefined' && 
+                typeof taskGraphHandler.initializeGraph === 'function') {
+                taskGraphHandler.initializeGraph();
+            }
         });
     </script>
 </body>
